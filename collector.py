@@ -35,14 +35,37 @@ class Collector:
             if self.should_close_flow(flow_key) or self.is_termination_packet(packet, flow_key):
                 self.close_flow_and_add_to_queue(flow_key)
 
+    # def get_flow_key(self, packet):
+    #     """
+    #     Creates flow key for the packet to specify to which flow it belongs 
+    #     (for now only 2-tuple approach, I will think about 5-tuple)
+    #     """
+    #     if packet.haslayer(IP):
+    #         return (packet[IP].src, packet[IP].dst)
+    #     return None
+
     def get_flow_key(self, packet):
         """
-        Creates flow key for the packet to specify to which flow it belongs 
-        (for now only 2-tuple approach, I will think about 5-tuple)
+        Creates a 5-tuple flow key (src_ip, dst_ip, src_port, dst_port, protocol).
         """
         if packet.haslayer(IP):
-            return (packet[IP].src, packet[IP].dst)
-        return None
+            src_ip = packet[IP].src
+            dst_ip = packet[IP].dst
+            protocol = packet[IP].proto
+
+            src_port = None
+            dst_port = None
+
+            if packet.haslayer(TCP):
+                src_port = packet[TCP].sport
+                dst_port = packet[TCP].dport
+            elif packet.haslayer(UDP):
+                src_port = packet[UDP].sport
+                dst_port = packet[UDP].dport
+
+            return (src_ip, dst_ip, src_port, dst_port, protocol)
+
+        return None  # Jeśli brak warstwy IP, zwracamy None
     
     def should_close_flow(self, flow_key):
         """Cheks if the flow should be closed"""
