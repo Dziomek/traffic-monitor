@@ -13,7 +13,7 @@ class Sniffer:
 
     def packet_callback(self, packet):
         self.collector_function(packet)
-        self.processor_function(packet)
+        # self.processor_function(packet)
         # print(f"[{self.iface}] {packet.summary()}")
 
     def start(self):
