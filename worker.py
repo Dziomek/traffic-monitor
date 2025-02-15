@@ -1,13 +1,16 @@
 import threading
 from sniffer import Sniffer
 from collector import Collector
+from processor import Processor
 import time
 
 class Worker:
     def __init__(self, iface, filter_expr="tcp", max_queue_size=1000):
         self.iface = iface
         self.collector = Collector(max_size=max_queue_size)
-        self.sniffer = Sniffer(iface=self.iface, filter_expr=filter_expr, collector_function=self.collector.add_packet)
+        self.processor = Processor(model=None)
+        self.sniffer = Sniffer(iface=self.iface, filter_expr=filter_expr, collector_function=self.collector.add_packet, 
+                               processor_function=self.processor.process_packet)
         self.running = False
         self.thread = threading.Thread(target=self.process_packets, daemon=True)
 
