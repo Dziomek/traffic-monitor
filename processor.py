@@ -37,3 +37,9 @@ class Processor:
 
         features = self.extract_features(packet)
         print(f'I managed to get following data from {packet}: {features}')
+
+    def process_flow(self, flow):
+        length = len(flow['packets'])
+        print('****************************FLOW******************************', length, flow['last_packet_timestamp'] - flow['first_packet_timestamp'])
+        
+            

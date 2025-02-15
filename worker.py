@@ -2,7 +2,7 @@ import threading
 from sniffer import Sniffer
 from collector import Collector
 from processor import Processor
-import time
+import queue
 
 class Worker:
     def __init__(self, iface, filter_expr="tcp", max_queue_size=1000):
@@ -12,7 +12,7 @@ class Worker:
         self.sniffer = Sniffer(iface=self.iface, filter_expr=filter_expr, collector_function=self.collector.add_packet, 
                                processor_function=self.processor.process_packet)
         self.running = False
-        self.thread = threading.Thread(target=self.process_packets, daemon=True)
+        self.thread = threading.Thread(target=self.process_flows, daemon=True)
 
     def start(self):
         if not self.running:
@@ -26,7 +26,11 @@ class Worker:
         self.sniffer.stop()
         print(f"Worker for {self.iface} stopped")
 
-    def process_packets(self):
+    def process_flows(self):
         while self.running:
-            print(f'Message from worker on interface {self.iface}: size of the collector is {self.collector.size()}')
-            time.sleep(5)
+            try:
+                flow = self.collector.flow_queue.get(timeout=1)  # max 1 s delay
+                if flow:
+                    self.processor.process_flow(flow)
+            except queue.Empty:
+                pass
