@@ -1,6 +1,7 @@
 from scapy.all import get_if_list, get_if_addr
 from sniffer import Sniffer
 import time
+from worker import Worker
 
 def list_interfaces():
     interfaces = get_if_list()
@@ -15,16 +16,19 @@ if __name__ == "__main__":
         print("No interfaces")
         exit(1)
 
-    my_int = interfaces[5]
+    # my_int = interfaces[5]
 
-    print(f"\nStarting sniffer on {my_int}")
+    # Tworzymy workerów dla każdego interfejsu
+    workers = [Worker(iface, filter_expr="tcp") for iface in interfaces]
 
-    sniffer = Sniffer(iface=my_int, count=0, filter_expr="icmp")
-    sniffer.start()
+    # Uruchamiamy workerów
+    for worker in workers:
+        worker.start()
 
     try:
-        while sniffer.running:
+        while any(worker.running for worker in workers):
             time.sleep(1)
     except KeyboardInterrupt:
-        print("\nStopping sniffer...")
-        sniffer.stop()
+        print("\n[*] Zatrzymywanie workerów...")
+        for worker in workers:
+            worker.stop()
