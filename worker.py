@@ -9,8 +9,7 @@ class Worker:
         self.iface = iface
         self.collector = Collector(max_size=max_queue_size)
         self.processor = Processor(model=None)
-        self.sniffer = Sniffer(iface=self.iface, filter_expr=filter_expr, collector_function=self.collector.add_packet, 
-                               processor_function=self.processor.process_packet)
+        self.sniffer = Sniffer(iface=self.iface, filter_expr=filter_expr, collector_function=self.collector.add_packet)
         self.running = False
         self.thread = threading.Thread(target=self.process_flows, daemon=True)
 
