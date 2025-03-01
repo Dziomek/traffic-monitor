@@ -27,9 +27,10 @@ class Worker:
         print(f"Worker for {self.iface} stopped")
 
     def process_flows(self):
-        while self.running:
+        while self.running: 
             try:
                 flow = self.collector.flow_queue.get(timeout=1)  # max 1 s delay
+                # print(flow)
                 if flow:
                     self.processor.process_flow(flow)
             except queue.Empty:

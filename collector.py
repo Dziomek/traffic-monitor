@@ -1,12 +1,12 @@
 import queue
-from collections import defaultdict
+from collections import defaultdict, deque
 from scapy.all import IP, TCP, UDP, ICMP
 import time
 import threading
 #NFStream ????????
 
 class Collector:
-    def __init__(self, max_size=-1, flow_timeout=30, flow_max_duration=60):
+    def __init__(self, max_size=-1, flow_timeout=15, flow_max_duration=15):
         self.flows = defaultdict(lambda: {"packets": [], "first_packet_timestamp": None, "last_packet_timestamp": None}) # for all flows
         self.packets = [] # for all packets
         self.flow_queue = queue.Queue(maxsize=max_size) # flows to process

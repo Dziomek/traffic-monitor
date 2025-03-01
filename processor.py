@@ -1,8 +1,22 @@
 from scapy.all import IP, TCP, UDP, ICMP
+import os
+import csv
 
 class Processor:
-    def __init__(self, model):
+    def __init__(self, model, output_folder="records", output_file="network_data.csv"):
         self.model = model
+        self.output_folder = output_folder
+        self.output_file = os.path.join(output_folder, output_file)
+
+        os.makedirs(self.output_folder, exist_ok=True)
+
+        self.fields = [
+            "flow_duration", "packet_count", "byte_count", "avg_packet_size",
+            "time_between_packets_mean", "protocol", "src_port", "dst_port",
+            "num_syn_flags", "num_rst_flags", "num_fin_flags", "tcp_flags_count",
+            "packets_src_to_dst", "packets_dst_to_src", "bytes_src_to_dst", "bytes_dst_to_src",
+            "label"
+        ]
 
     def extract_features(self, packet):
         features = {}
@@ -30,6 +44,8 @@ class Processor:
             features["icmp_code"] = packet[ICMP].code
 
         features["payload_size"] = len(packet.payload)
+
+
         
         return features
 
@@ -41,5 +57,6 @@ class Processor:
     def process_flow(self, flow):
         length = len(flow['packets'])
         print('****************************FLOW******************************', length, flow['last_packet_timestamp'] - flow['first_packet_timestamp'])
+        
         
             

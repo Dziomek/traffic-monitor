@@ -18,10 +18,8 @@ if __name__ == "__main__":
 
     # my_int = interfaces[5]
 
-    # Tworzymy workerów dla każdego interfejsu
     workers = [Worker(iface, filter_expr="tcp") for iface in interfaces]
 
-    # Uruchamiamy workerów
     for worker in workers:
         worker.start()
 
