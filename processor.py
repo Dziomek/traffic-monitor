@@ -18,6 +18,11 @@ class Processor:
             "label"
         ]
 
+        if not os.path.exists(self.output_file):
+            with open(self.output_file, "w", newline="") as f:
+                writer = csv.writer(f)
+                writer.writerow(self.fields)
+
     def extract_features(self, packet):
         features = {}
 
