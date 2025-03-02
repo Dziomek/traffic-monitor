@@ -32,6 +32,7 @@ class Processor:
         flow_start_time = datetime.fromtimestamp(flow["first_packet_timestamp"]).strftime('%Y-%m-%d %H:%M:%S')
         flow_end_time = datetime.fromtimestamp(flow["last_packet_timestamp"]).strftime('%Y-%m-%d %H:%M:%S')
         flow_duration = flow["last_packet_timestamp"] - flow["first_packet_timestamp"]
+        flow_duration = max(flow_duration, 1e-6) # prevents division by 0
 
         # size/count
         packet_count = len(flow["packets"])
