@@ -14,7 +14,7 @@ if __name__ == "__main__":
 
     # my_int = interfaces[5]
 
-    workers = [Worker(iface, filter_expr="tcp") for iface in interfaces]
+    workers = [Worker(iface, filter_expr="") for iface in interfaces]
 
     for worker in workers:
         worker.start()
