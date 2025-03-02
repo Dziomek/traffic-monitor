@@ -2,6 +2,7 @@ from scapy.all import IP, TCP, UDP, ICMP
 import os
 import csv
 from datetime import datetime
+import statistics
 
 class Processor:
     def __init__(self, model, output_folder="records", output_file="vm_flow_01_03.csv"):
@@ -12,9 +13,10 @@ class Processor:
         os.makedirs(self.output_folder, exist_ok=True)
 
         self.fields = [
-            "src_ip", "dst_ip", "src_port", "dst_port", "protocol", "flow_duration", "packet_count", "byte_count", "avg_packet_size",
-            "time_between_packets_mean", "num_syn_flags", "num_rst_flags", "num_fin_flags", "tcp_flags_count",
-            "packets_src_to_dst", "packets_dst_to_src", "bytes_src_to_dst", "bytes_dst_to_src", "label"
+            "src_ip", "dst_ip", "src_port", "dst_port", "protocol", "flow_duration", "packet_rate",
+            "byte_rate", "packet_count", "byte_count", "avg_packet_size", "min_packet_size", "max_packet_size", "std_packet_size"
+            "time_between_packets_mean", "num_syn_flags", "num_rst_flags", "num_fin_flags", "num_urg_flags", "num_psh_flags", "num_ack_flags", 
+            "initial_window_size", "incomplete_handshake", "tcp_flags_count", "packets_src_to_dst", "packets_dst_to_src", "bytes_src_to_dst", "bytes_dst_to_src", "label"
         ]
 
         if not os.path.exists(self.output_file):
@@ -36,6 +38,16 @@ class Processor:
         byte_count = sum(len(pkt) for pkt in flow["packets"])
         avg_packet_size = byte_count / packet_count if packet_count > 0 else 0
 
+        # packet rate & byte rate
+        packet_rate = packet_count / flow_duration
+        byte_rate = byte_count / flow_duration
+
+        # stats of size
+        packet_sizes = [len(pkt) for pkt in flow["packets"]]
+        min_packet_size = min(packet_sizes, default=0)
+        max_packet_size = max(packet_sizes, default=0)
+        std_packet_size = statistics.stdev(packet_sizes) if packet_count > 1 else 0
+
         # time differences
         if packet_count > 1:
             time_diffs = [flow["packets"][i+1].time - flow["packets"][i].time for i in range(len(flow["packets"])-1)]
@@ -56,7 +68,16 @@ class Processor:
         num_syn_flags = sum(1 for pkt in flow["packets"] if pkt.haslayer(TCP) and "S" in pkt[TCP].flags)
         num_rst_flags = sum(1 for pkt in flow["packets"] if pkt.haslayer(TCP) and "R" in pkt[TCP].flags)
         num_fin_flags = sum(1 for pkt in flow["packets"] if pkt.haslayer(TCP) and "F" in pkt[TCP].flags)
-        tcp_flags_count = num_syn_flags + num_rst_flags + num_fin_flags
+        num_urg_flags = sum(1 for pkt in flow["packets"] if pkt.haslayer(TCP) and "U" in pkt[TCP].flags)
+        num_psh_flags = sum(1 for pkt in flow["packets"] if pkt.haslayer(TCP) and "P" in pkt[TCP].flags)
+        num_ack_flags = sum(1 for pkt in flow["packets"] if pkt.haslayer(TCP) and "A" in pkt[TCP].flags)
+        tcp_flags_count = num_syn_flags + num_rst_flags + num_fin_flags + num_urg_flags + num_psh_flags + num_ack_flags
+
+        # Initial Window Size (from first TCP packet)
+        initial_window_size = first_packet[TCP].window if first_packet.haslayer(TCP) else None
+
+        # Incomplete Handshake (SYN without SYN-ACK-ACK)
+        incomplete_handshake = 1 if (num_syn_flags > 0 and num_ack_flags == 0) else 0
 
         # both direction stats
         src_ip = first_packet[IP].src if first_packet.haslayer(IP) else None
@@ -70,9 +91,10 @@ class Processor:
         label = "benign"
 
         row = [
-            src_ip, dst_ip, src_port, dst_port, protocol, flow_duration, packet_count, byte_count, avg_packet_size,
-            time_between_packets_mean, num_syn_flags, num_rst_flags, num_fin_flags, tcp_flags_count,
-            packets_src_to_dst, packets_dst_to_src, bytes_src_to_dst, bytes_dst_to_src, label
+            src_ip, dst_ip, src_port, dst_port, protocol, flow_duration, packet_rate, byte_rate, 
+            packet_count, byte_count, avg_packet_size, min_packet_size, max_packet_size, std_packet_size,
+            time_between_packets_mean, num_syn_flags, num_rst_flags, num_fin_flags, num_urg_flags, num_psh_flags, num_ack_flags,
+            initial_window_size, incomplete_handshake, tcp_flags_count, packets_src_to_dst, packets_dst_to_src, bytes_src_to_dst, bytes_dst_to_src, label
         ]
 
         return row
