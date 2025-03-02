@@ -4,7 +4,7 @@ import csv
 from datetime import datetime
 
 class Processor:
-    def __init__(self, model, output_folder="records", output_file="benign_flow_01_03.csv"):
+    def __init__(self, model, output_folder="records", output_file="vm_flow_01_03.csv"):
         self.model = model
         self.output_folder = output_folder
         self.output_file = os.path.join(output_folder, output_file)

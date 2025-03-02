@@ -5,7 +5,7 @@ from processor import Processor
 import queue
 
 class Worker:
-    def __init__(self, iface, filter_expr="tcp", max_queue_size=1000):
+    def __init__(self, iface, filter_expr="", max_queue_size=1000):
         self.iface = iface
         self.collector = Collector(max_size=max_queue_size)
         self.processor = Processor(model=None)

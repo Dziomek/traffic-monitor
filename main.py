@@ -1,16 +1,12 @@
-from scapy.all import get_if_list, get_if_addr
+from scapy.all import get_if_list, get_if_hwaddr
 from sniffer import Sniffer
 import time
 from worker import Worker
 
-def list_interfaces():
-    interfaces = get_if_list()
-    print(interfaces)
-
-    return interfaces
+TARGET_MAC = "0A:00:27:00:00:04"
 
 if __name__ == "__main__":
-    interfaces = list_interfaces()
+    interfaces = get_if_list()
 
     if not interfaces:
         print("No interfaces")
