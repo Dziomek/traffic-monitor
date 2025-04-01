@@ -5,12 +5,13 @@ from datetime import datetime
 import statistics
 
 class Processor:
-    def __init__(self, model, output_folder="records", output_file="vm_flow_01_03.csv"):
+    def __init__(self, model, output_folder, csv_filename):
         self.model = model
         self.output_folder = output_folder
-        self.output_file = os.path.join(output_folder, output_file)
+        self.output_file = None
 
-        os.makedirs(self.output_folder, exist_ok=True)
+        if csv_filename:
+            self.output_file = os.path.join(self.output_folder, csv_filename)
 
         self.fields = [
             "src_ip", "dst_ip", "src_port", "dst_port", "protocol", "flow_duration", "packet_rate",
@@ -19,10 +20,14 @@ class Processor:
             "initial_window_size", "incomplete_handshake", "tcp_flags_count", "packets_src_to_dst", "packets_dst_to_src", "bytes_src_to_dst", "bytes_dst_to_src", "label"
         ]
 
-        if not os.path.exists(self.output_file):
-            with open(self.output_file, "w", newline="") as f:
-                writer = csv.writer(f)
-                writer.writerow(self.fields)
+        if self.output_file:
+            if not os.path.exists(self.output_file):
+                try:
+                    with open(self.output_file, "w", newline="") as f:
+                        writer = csv.writer(f)
+                        writer.writerow(self.fields)
+                except Exception as e:
+                    print(f"Błąd przy tworzeniu pliku CSV: {e}")
     
     def extract_features(self, flow):
         first_packet = flow["packets"][0]
@@ -106,11 +111,12 @@ class Processor:
         
         row = self.extract_features(flow)
 
-        with open(self.output_file, "a", newline="") as f:
-            writer = csv.writer(f)
-            writer.writerow(row)
-
-        print(f"Flow saved to CSV")
-        
+        if self.output_file:
+            with open(self.output_file, "a", newline="") as f:
+                writer = csv.writer(f)
+                writer.writerow(row)
+            print(f"Flow detected. Saved to {self.output_file}")
+        else:
+            print("Flow detected")
         
             

@@ -2,7 +2,7 @@ from scapy.all import sniff
 import threading
 
 class Sniffer:
-    def __init__(self, iface, collector_function, count=0, filter_expr=""):
+    def __init__(self, iface, collector_function, filter_expr, count=0):
         self.iface = iface
         self.collector_function = collector_function
         self.count = count

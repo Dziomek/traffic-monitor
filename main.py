@@ -1,11 +1,11 @@
 from scapy.all import get_if_list, get_if_hwaddr
-from sniffer import Sniffer
 import time
 from worker import Worker
-
-TARGET_MAC = "0A:00:27:00:00:04"
+from config import get_config
 
 if __name__ == "__main__":
+    config = get_config()
+
     interfaces = get_if_list()
 
     if not interfaces:
@@ -14,7 +14,15 @@ if __name__ == "__main__":
 
     # my_int = interfaces[5]
 
-    workers = [Worker(iface, filter_expr="") for iface in interfaces]
+    workers = [
+        Worker(
+            iface,
+            filter_expr=config["filter_expr"],
+            csv_filename=config["csv_file"],
+            output_folder=config["output_folder"]
+        )
+        for iface in interfaces
+    ]
 
     for worker in workers:
         worker.start()
