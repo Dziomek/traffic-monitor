@@ -5,9 +5,9 @@ from processor import Processor
 import queue
 
 class Worker:
-    def __init__(self, iface, filter_expr, csv_filename, output_folder, max_queue_size=1000):
+    def __init__(self, iface, filter_expr, csv_filename, output_folder, flow_timeout, flow_max_duration, max_queue_size=1000):
         self.iface = iface
-        self.collector = Collector(max_queue_size=max_queue_size)
+        self.collector = Collector(max_queue_size=max_queue_size, flow_timeout=flow_timeout, flow_max_duration=flow_max_duration)
         self.processor = Processor(None, output_folder=output_folder, csv_filename=csv_filename)
         self.sniffer = Sniffer(iface=self.iface, filter_expr=filter_expr, collector_function=self.collector.add_packet)
         self.running = False

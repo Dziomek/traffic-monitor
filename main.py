@@ -19,7 +19,9 @@ if __name__ == "__main__":
             iface,
             filter_expr=config["filter_expr"],
             csv_filename=config["csv_file"],
-            output_folder=config["output_folder"]
+            output_folder=config["output_folder"],
+            flow_timeout=config["flow_timeout"],
+            flow_max_duration=config["flow_max_duration"]
         )
         for iface in interfaces
     ]
