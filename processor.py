@@ -15,7 +15,7 @@ class Processor:
 
         self.fields = [
             "src_ip", "dst_ip", "src_port", "dst_port", "protocol", "flow_duration", "packet_rate",
-            "byte_rate", "packet_count", "byte_count", "avg_packet_size", "min_packet_size", "max_packet_size", "std_packet_size"
+            "byte_rate", "packet_count", "byte_count", "avg_packet_size", "min_packet_size", "max_packet_size", "std_packet_size",
             "time_between_packets_mean", "num_syn_flags", "num_rst_flags", "num_fin_flags", "num_urg_flags", "num_psh_flags", "num_ack_flags", 
             "initial_window_size", "incomplete_handshake", "tcp_flags_count", "packets_src_to_dst", "packets_dst_to_src", "bytes_src_to_dst", "bytes_dst_to_src", "label"
         ]
