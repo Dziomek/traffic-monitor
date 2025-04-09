@@ -3,10 +3,14 @@ import os
 import csv
 from datetime import datetime
 import statistics
+import joblib
+import numpy as np
+import pandas as pd
 
 class Processor:
-    def __init__(self, model, output_folder, csv_filename):
-        self.model = model
+    def __init__(self, output_folder, csv_filename, model_path="rf_model.pkl", encoder_path="label_encoder.pkl"):
+        self.model = joblib.load(model_path)
+        self.encoder = joblib.load(encoder_path)
         self.output_folder = output_folder
         self.output_file = None
 
@@ -20,6 +24,8 @@ class Processor:
             "initial_window_size", "incomplete_handshake", "tcp_flags_count", "packets_src_to_dst", "packets_dst_to_src", "bytes_src_to_dst", "bytes_dst_to_src", "label"
         ]
 
+        self.columns_to_ignore = ["src_ip", "dst_ip", "label"]
+
         if self.output_file:
             if not os.path.exists(self.output_file):
                 try:
@@ -29,6 +35,12 @@ class Processor:
                 except Exception as e:
                     print(f"Błąd przy tworzeniu pliku CSV: {e}")
     
+    def predict_label(self, model_row):
+        feature_df = pd.DataFrame([model_row])
+        prediction = self.model.predict(feature_df)[0]
+        label = self.encoder.inverse_transform([prediction])[0]
+        return label
+
     def extract_features(self, flow):
         first_packet = flow["packets"][0]
         last_packet = flow["packets"][-1]
@@ -96,27 +108,44 @@ class Processor:
         # to change manually for attacks
         label = "benign"
 
-        row = [
+        # pełny wiersz do CSV
+        csv_row = [
             src_ip, dst_ip, src_port, dst_port, protocol, flow_duration, packet_rate, byte_rate, 
             packet_count, byte_count, avg_packet_size, min_packet_size, max_packet_size, std_packet_size,
             time_between_packets_mean, num_syn_flags, num_rst_flags, num_fin_flags, num_urg_flags, num_psh_flags, num_ack_flags,
             initial_window_size, incomplete_handshake, tcp_flags_count, packets_src_to_dst, packets_dst_to_src, bytes_src_to_dst, bytes_dst_to_src, label
         ]
 
-        return row
+        model_row = {
+            k: v for k, v in zip(self.fields, csv_row)
+            if k not in self.columns_to_ignore
+        }
+
+        return {
+            "csv_row": csv_row,
+            "model_row": model_row
+        }
 
     def process_flow(self, flow):
         if not flow["packets"]:
             return
-        
-        row = self.extract_features(flow)
 
+        # Wyciągnięcie cech
+        features = self.extract_features(flow)
+        csv_row = features["csv_row"]
+        model_row = features["model_row"]
+
+        # Predykcja
+        predicted_label = self.predict_label(model_row)
+        csv_row[-1] = predicted_label
+
+        # Zapis do pliku
         if self.output_file:
             with open(self.output_file, "a", newline="") as f:
                 writer = csv.writer(f)
-                writer.writerow(row)
-            print(f"Flow detected. Saved to {self.output_file}")
+                writer.writerow(csv_row)
+            print(f"Flow classified as '{predicted_label}' and saved to {self.output_file}")
         else:
-            print("Flow detected")
+            print(f"Flow classified as '{predicted_label}'")
         
             

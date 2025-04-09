@@ -6,7 +6,7 @@ from sklearn.preprocessing import LabelEncoder
 import joblib
 
 # === PARAMETRY ===
-INPUT_FOLDER = "processed"
+INPUT_FOLDER = "processed_stripped"
 MODEL_PATH = "rf_model.pkl"
 ENCODER_PATH = "label_encoder.pkl"
 
