@@ -2,10 +2,9 @@ from scapy.all import sniff
 import threading
 
 class Sniffer:
-    def __init__(self, iface, collector_function, processor_function, count=0, filter_expr=""):
+    def __init__(self, iface, collector_function, filter_expr, count=0):
         self.iface = iface
         self.collector_function = collector_function
-        self.processor_function = processor_function
         self.count = count
         self.filter_expr = filter_expr
         self.running = False
@@ -13,7 +12,7 @@ class Sniffer:
 
     def packet_callback(self, packet):
         self.collector_function(packet)
-        self.processor_function(packet)
+        # self.processor_function(packet)
         # print(f"[{self.iface}] {packet.summary()}")
 
     def start(self):

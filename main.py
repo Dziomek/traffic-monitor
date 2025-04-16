@@ -1,16 +1,12 @@
-from scapy.all import get_if_list, get_if_addr
-from sniffer import Sniffer
+from scapy.all import get_if_list, get_if_hwaddr
 import time
 from worker import Worker
-
-def list_interfaces():
-    interfaces = get_if_list()
-    print(interfaces)
-
-    return interfaces
+from config import get_config
 
 if __name__ == "__main__":
-    interfaces = list_interfaces()
+    config = get_config()
+
+    interfaces = config["interfaces"]
 
     if not interfaces:
         print("No interfaces")
@@ -18,10 +14,19 @@ if __name__ == "__main__":
 
     # my_int = interfaces[5]
 
-    # Tworzymy workerów dla każdego interfejsu
-    workers = [Worker(iface, filter_expr="tcp") for iface in interfaces]
+    workers = [
+        Worker(
+            iface,
+            filter_expr=config["filter_expr"],
+            csv_filename=config["csv_file"],
+            output_folder=config["output_folder"],
+            flow_timeout=config["flow_timeout"],
+            flow_max_duration=config["flow_max_duration"],
+            mode=config["mode"]
+        )
+        for iface in interfaces
+    ]
 
-    # Uruchamiamy workerów
     for worker in workers:
         worker.start()
 
