@@ -17,6 +17,7 @@ def get_active_interfaces(exclude=("lo", "docker0", "vboxnet0")):
 
 def get_config():
     parser = argparse.ArgumentParser()
+    parser.add_argument("--mode", choices=["collect", "detect"], default="detect", help="Tryb działania programu")
     parser.add_argument('--csv_file', help="Nazwa pliku CSV (bez rozszerzenia)")
     parser.add_argument('--output_folder', help="Nazwa folderu, do którego zapisywane są pliki", default="records")
     parser.add_argument('--filter_expr', help="Wyrażenie BPF do filtrowania pakietów (np. 'tcp or udp')", default="")
@@ -30,6 +31,7 @@ def get_config():
     os.makedirs(args.output_folder, exist_ok=True)
 
     config = {
+        "mode": args.mode,
         "csv_file": f"{args.csv_file}.csv" if args.csv_file else None,
         "output_folder": args.output_folder,
         "filter_expr": args.filter_expr,

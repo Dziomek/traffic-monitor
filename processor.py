@@ -8,7 +8,8 @@ import numpy as np
 import pandas as pd
 
 class Processor:
-    def __init__(self, output_folder, csv_filename, model_path="model/rf_model.pkl", encoder_path="model/label_encoder.pkl"):
+    def __init__(self, output_folder, csv_filename, mode, model_path="model/rf_model.pkl", encoder_path="model/label_encoder.pkl"):
+        self.mode = mode
         self.model = joblib.load(model_path)
         self.encoder = joblib.load(encoder_path)
         self.output_folder = output_folder
@@ -135,18 +136,22 @@ class Processor:
         csv_row = features["csv_row"]
         model_row = features["model_row"]
 
+
         # Predykcja
-        predicted_label = self.predict_label(model_row)
-        # csv_row[-1] = predicted_label
-        csv_row[-1] = "benign"
+        if(self.mode == "detect"):
+            predicted_label = self.predict_label(model_row)
+        else:
+            predicted_label = "benign"
+
+        csv_row[-1] = predicted_label
 
         # Zapis do pliku
         if self.output_file:
             with open(self.output_file, "a", newline="") as f:
                 writer = csv.writer(f)
                 writer.writerow(csv_row)
-            print(f"Flow classified as '{predicted_label}' and saved to {self.output_file}")
+            print(f"*MODE: {self.mode}* Flow classified as '{predicted_label}' and saved to {self.output_file}")
         else:
-            print(f"Flow classified as '{predicted_label}'")
+            print(f"*MODE: {self.mode}* Flow classified as '{predicted_label}'")
         
             

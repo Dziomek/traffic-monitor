@@ -21,7 +21,8 @@ if __name__ == "__main__":
             csv_filename=config["csv_file"],
             output_folder=config["output_folder"],
             flow_timeout=config["flow_timeout"],
-            flow_max_duration=config["flow_max_duration"]
+            flow_max_duration=config["flow_max_duration"],
+            mode=config["mode"]
         )
         for iface in interfaces
     ]
