@@ -2,7 +2,7 @@ import os
 import pandas as pd
 
 SOURCE_FOLDER = "records"
-OUTPUT_FOLDER = "processed_stripped"
+OUTPUT_FOLDER = "processed"
 NEW_LABEL = "PORT_SCAN"
 
 IP_A = "192.168.154.39"

@@ -3,7 +3,7 @@ import pandas as pd
 import ipaddress
 
 SOURCE_FOLDER = "records"
-OUTPUT_FOLDER = "processed_stripped"
+OUTPUT_FOLDER = "processed"
 TARGET_PROTOCOL = 1
 NEW_LABEL = "ICMP flood"
 
