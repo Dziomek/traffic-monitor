@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 
 class Processor:
-    def __init__(self, output_folder, csv_filename, model_path="rf_model.pkl", encoder_path="label_encoder.pkl"):
+    def __init__(self, output_folder, csv_filename, model_path="model/rf_model.pkl", encoder_path="model/label_encoder.pkl"):
         self.model = joblib.load(model_path)
         self.encoder = joblib.load(encoder_path)
         self.output_folder = output_folder
