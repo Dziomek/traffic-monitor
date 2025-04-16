@@ -137,7 +137,8 @@ class Processor:
 
         # Predykcja
         predicted_label = self.predict_label(model_row)
-        csv_row[-1] = predicted_label
+        # csv_row[-1] = predicted_label
+        csv_row[-1] = "benign"
 
         # Zapis do pliku
         if self.output_file:
