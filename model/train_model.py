@@ -8,9 +8,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import joblib
 
-INPUT_FOLDER = "dataset"
-MODEL_PATH = "model/rf_model_15s.pkl"
-ENCODER_PATH = "model/label_encoder_15s.pkl"
+INPUT_FOLDER = "collected_5s"
+MODEL_PATH = "model/rf_model_5s.pkl"
+ENCODER_PATH = "model/label_encoder_5s.pkl"
 
 dataframes = []
 for filename in os.listdir(INPUT_FOLDER):
