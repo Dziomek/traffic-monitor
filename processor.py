@@ -41,42 +41,27 @@ class Processor:
     def extract_features(self, flow):
         first_packet = flow["packets"][0]
 
-        # time
+        src_ip = first_packet[IP].src if first_packet.haslayer(IP) else None
+        dst_ip = first_packet[IP].dst if first_packet.haslayer(IP) else None
+        src_port = first_packet[TCP].sport if first_packet.haslayer(TCP) else (first_packet[UDP].sport if first_packet.haslayer(UDP) else None)
+        dst_port = first_packet[TCP].dport if first_packet.haslayer(TCP) else (first_packet[UDP].dport if first_packet.haslayer(UDP) else None)
+        protocol = first_packet[IP].proto if first_packet.haslayer(IP) else None
         flow_duration = flow["last_packet_timestamp"] - flow["first_packet_timestamp"]
-        flow_duration = max(flow_duration, 1e-6) # prevents division by 0
-
-        # size/count
+        flow_duration = max(flow_duration, 1e-6) # prevents division by 0 later
         packet_count = len(flow["packets"])
         byte_count = sum(len(pkt) for pkt in flow["packets"])
-        avg_packet_size = byte_count / packet_count if packet_count > 0 else 0
-
-        # packet rate & byte rate
         packet_rate = packet_count / flow_duration
         byte_rate = byte_count / flow_duration
-
-        # stats of size
+        avg_packet_size = byte_count / packet_count if packet_count > 0 else 0
         packet_sizes = [len(pkt) for pkt in flow["packets"]]
         min_packet_size = min(packet_sizes, default=0)
         max_packet_size = max(packet_sizes, default=0)
         std_packet_size = statistics.stdev(packet_sizes) if packet_count > 1 else 0
-
-        # time differences
         if packet_count > 1:
             time_diffs = [flow["packets"][i+1].time - flow["packets"][i].time for i in range(len(flow["packets"])-1)]
             time_between_packets_mean = sum(time_diffs) / len(time_diffs)
         else:
             time_between_packets_mean = 0
-
-        # ip adresses
-        src_ip = first_packet[IP].src if first_packet.haslayer(IP) else None
-        dst_ip = first_packet[IP].dst if first_packet.haslayer(IP) else None
-
-        # ports/protocols
-        protocol = first_packet[IP].proto if first_packet.haslayer(IP) else None
-        src_port = first_packet[TCP].sport if first_packet.haslayer(TCP) else (first_packet[UDP].sport if first_packet.haslayer(UDP) else None)
-        dst_port = first_packet[TCP].dport if first_packet.haslayer(TCP) else (first_packet[UDP].dport if first_packet.haslayer(UDP) else None)
-
-        # TCP flags
         num_syn_flags = sum(1 for pkt in flow["packets"] if pkt.haslayer(TCP) and "S" in pkt[TCP].flags)
         num_rst_flags = sum(1 for pkt in flow["packets"] if pkt.haslayer(TCP) and "R" in pkt[TCP].flags)
         num_fin_flags = sum(1 for pkt in flow["packets"] if pkt.haslayer(TCP) and "F" in pkt[TCP].flags)
@@ -84,22 +69,10 @@ class Processor:
         num_psh_flags = sum(1 for pkt in flow["packets"] if pkt.haslayer(TCP) and "P" in pkt[TCP].flags)
         num_ack_flags = sum(1 for pkt in flow["packets"] if pkt.haslayer(TCP) and "A" in pkt[TCP].flags)
         tcp_flags_count = num_syn_flags + num_rst_flags + num_fin_flags + num_urg_flags + num_psh_flags + num_ack_flags
-
-        # Initial Window Size (from first TCP packet)
         initial_window_size = first_packet[TCP].window if first_packet.haslayer(TCP) else None
-
-        # Incomplete Handshake (SYN without SYN-ACK-ACK)
         incomplete_handshake = 1 if (num_syn_flags > 0 and num_ack_flags == 0) else 0
-
-        # both direction stats
-        src_ip = first_packet[IP].src if first_packet.haslayer(IP) else None
-        dst_ip = first_packet[IP].dst if first_packet.haslayer(IP) else None
         packets_src_to_dst = sum(1 for pkt in flow["packets"] if pkt[IP].src == src_ip) if src_ip else 0
-        packets_dst_to_src = sum(1 for pkt in flow["packets"] if pkt[IP].src == dst_ip) if dst_ip else 0
         bytes_src_to_dst = sum(len(pkt) for pkt in flow["packets"] if pkt[IP].src == src_ip) if src_ip else 0
-        bytes_dst_to_src = sum(len(pkt) for pkt in flow["packets"] if pkt[IP].src == dst_ip) if dst_ip else 0
-
-        # to change manually for attacks
         label = "benign"
 
         all_features_dict = {
@@ -109,10 +82,10 @@ class Processor:
             "dst_port": dst_port,
             "protocol": protocol,
             "flow_duration": flow_duration,
-            "packet_rate": packet_rate,
-            "byte_rate": byte_rate,
             "packet_count": packet_count,
             "byte_count": byte_count,
+            "packet_rate": packet_rate,
+            "byte_rate": byte_rate,
             "avg_packet_size": avg_packet_size,
             "min_packet_size": min_packet_size,
             "max_packet_size": max_packet_size,
@@ -124,13 +97,11 @@ class Processor:
             "num_urg_flags": num_urg_flags,
             "num_psh_flags": num_psh_flags,
             "num_ack_flags": num_ack_flags,
+            "tcp_flags_count": tcp_flags_count,
             "initial_window_size": initial_window_size,
             "incomplete_handshake": incomplete_handshake,
-            "tcp_flags_count": tcp_flags_count,
             "packets_src_to_dst": packets_src_to_dst,
-            "packets_dst_to_src": packets_dst_to_src,
             "bytes_src_to_dst": bytes_src_to_dst,
-            "bytes_dst_to_src": bytes_dst_to_src,
             "label": label
         }
 
