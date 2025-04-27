@@ -7,10 +7,12 @@ import queue
 class Worker:
     def __init__(self, iface, config, max_queue_size=1000):
         self.iface = iface
-        self.collector = Collector(max_queue_size=max_queue_size, flow_timeout=config.flow_timeout, flow_max_duration=config.flow_max_duration)
-        self.processor = Processor(output_folder=config.OUTPUT_FOLDER, csv_filename=config.CSV_FILENAME, mode=config.mode, attack=config.attack,
-                                   model_path=config.MODEL_PATH, encoder_path=config.ENCODER_PATH)
-        self.sniffer = Sniffer(iface=self.iface, filter_expr=config.filter_expr, collector_function=self.collector.add_packet)
+        self.collector = Collector(max_queue_size=max_queue_size, flow_timeout=config["flow_timeout"], 
+                                   flow_max_duration=config["flow_max_duration"])
+        self.processor = Processor(output_folder=config["OUTPUT_FOLDER"], csv_filename=config["CSV_FILENAME"], 
+                                   mode=config["mode"], attack=config["attack"], attacker_ip=config["attacker_ip"], 
+                                   model_path=config["MODEL_PATH"], encoder_path=config["ENCODER_PATH"])
+        self.sniffer = Sniffer(iface=self.iface, filter_expr=config["filter_expr"], collector_function=self.collector.add_packet)
         self.running = False
         self.thread = threading.Thread(target=self.process_flows, daemon=True)
 

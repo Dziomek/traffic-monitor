@@ -29,21 +29,20 @@ def get_config():
         if not args.attack or not args.attacker_ip:
             parser.error("--attack and --attacker_ip are required in collect mode.")
 
-    interfaces = args.interface if args.interface else get_active_interfaces()
-
-    os.makedirs(args.output_folder, exist_ok=True)
-
     config = {
         "mode": args.mode,
         "attack": args.attack,
-        "attacker-ip": args.attacker_ip,
+        "attacker_ip": args.attacker_ip,
         "filter_expr": args.filter_expr,
         "flow_timeout": args.flow_timeout,
         "flow_max_duration": args.flow_max_duration,
-        "INTERFACES": interfaces,
+        "INTERFACES": get_active_interfaces(),
         "CSV_FILENAME": f"{args.attack}_{args.flow_max_duration}s_{args.flow_timeout}s.csv" if args.attack else None,
         "OUTPUT_FOLDER": "dataset",
         "MODEL_PATH": "model/rf_model.pkl",
         "ENCODER_PATH": "model/label_encoder.pkl"
     }
+
+    os.makedirs(config["OUTPUT_FOLDER"], exist_ok=True)
+
     return config

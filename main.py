@@ -4,7 +4,7 @@ from config import get_config
 
 if __name__ == "__main__":
     config = get_config()
-    interfaces = config["interfaces"]
+    interfaces = config["INTERFACES"]
 
     if not interfaces:
         print("No interfaces")
