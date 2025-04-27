@@ -37,6 +37,8 @@ class AllFeatures(str, Enum):
 class ExcludedFeatures(str, Enum):
     SRC_IP = "src_ip"
     DST_IP = "dst_ip"
+    SRC_PORT = "src_port"
+    DST_PORT = "dst_port"
     LABEL = "label"
 
 def get_active_interfaces(exclude=("lo", "docker0", "vboxnet0")):
