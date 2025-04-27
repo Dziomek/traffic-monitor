@@ -11,6 +11,7 @@ class Worker:
                                    flow_max_duration=config["flow_max_duration"])
         self.processor = Processor(output_folder=config["OUTPUT_FOLDER"], csv_filename=config["CSV_FILENAME"], 
                                    mode=config["mode"], attack=config["attack"], attacker_ip=config["attacker_ip"], 
+                                   all_features=config["ALL_FEATURES"], model_features=config["MODEL_FEATURES"],
                                    model_path=config["MODEL_PATH"], encoder_path=config["ENCODER_PATH"])
         self.sniffer = Sniffer(iface=self.iface, filter_expr=config["filter_expr"], collector_function=self.collector.add_packet)
         self.running = False

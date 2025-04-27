@@ -8,7 +8,8 @@ import numpy as np
 import pandas as pd
 
 class Processor:
-    def __init__(self, output_folder, csv_filename, mode, attack, attacker_ip, model_path="model/rf_model.pkl", encoder_path="model/label_encoder.pkl"):
+    def __init__(self, output_folder, csv_filename, mode, attack, attacker_ip, all_features, model_features, 
+                 model_path="model/rf_model.pkl", encoder_path="model/label_encoder.pkl"):
         self.mode = mode
         self.attack = attack
         self.attacker_ip = attacker_ip
@@ -16,18 +17,11 @@ class Processor:
         self.encoder = joblib.load(encoder_path)
         self.output_folder = output_folder
         self.output_file = None
+        self.all_features = all_features
+        self.model_features = model_features
 
         if csv_filename:
             self.output_file = os.path.join(self.output_folder, csv_filename)
-
-        self.fields = [
-            "src_ip", "dst_ip", "src_port", "dst_port", "protocol", "flow_duration", "packet_rate",
-            "byte_rate", "packet_count", "byte_count", "avg_packet_size", "min_packet_size", "max_packet_size", "std_packet_size",
-            "time_between_packets_mean", "num_syn_flags", "num_rst_flags", "num_fin_flags", "num_urg_flags", "num_psh_flags", "num_ack_flags", 
-            "initial_window_size", "incomplete_handshake", "tcp_flags_count", "packets_src_to_dst", "packets_dst_to_src", "bytes_src_to_dst", "bytes_dst_to_src", "label"
-        ]
-
-        self.columns_to_ignore = ["src_ip", "dst_ip", "label"]
 
         if self.output_file:
             if not os.path.exists(self.output_file):
@@ -46,11 +40,8 @@ class Processor:
 
     def extract_features(self, flow):
         first_packet = flow["packets"][0]
-        last_packet = flow["packets"][-1]
 
         # time
-        flow_start_time = datetime.fromtimestamp(flow["first_packet_timestamp"]).strftime('%Y-%m-%d %H:%M:%S')
-        flow_end_time = datetime.fromtimestamp(flow["last_packet_timestamp"]).strftime('%Y-%m-%d %H:%M:%S')
         flow_duration = flow["last_packet_timestamp"] - flow["first_packet_timestamp"]
         flow_duration = max(flow_duration, 1e-6) # prevents division by 0
 
@@ -111,22 +102,41 @@ class Processor:
         # to change manually for attacks
         label = "benign"
 
-        # pełny wiersz do CSV
-        csv_row = [
-            src_ip, dst_ip, src_port, dst_port, protocol, flow_duration, packet_rate, byte_rate, 
-            packet_count, byte_count, avg_packet_size, min_packet_size, max_packet_size, std_packet_size,
-            time_between_packets_mean, num_syn_flags, num_rst_flags, num_fin_flags, num_urg_flags, num_psh_flags, num_ack_flags,
-            initial_window_size, incomplete_handshake, tcp_flags_count, packets_src_to_dst, packets_dst_to_src, bytes_src_to_dst, bytes_dst_to_src, label
-        ]
-
-        model_row = {
-            k: v for k, v in zip(self.fields, csv_row)
-            if k not in self.columns_to_ignore
+        all_features_dict = {
+            "src_ip": src_ip,
+            "dst_ip": dst_ip,
+            "src_port": src_port,
+            "dst_port": dst_port,
+            "protocol": protocol,
+            "flow_duration": flow_duration,
+            "packet_rate": packet_rate,
+            "byte_rate": byte_rate,
+            "packet_count": packet_count,
+            "byte_count": byte_count,
+            "avg_packet_size": avg_packet_size,
+            "min_packet_size": min_packet_size,
+            "max_packet_size": max_packet_size,
+            "std_packet_size": std_packet_size,
+            "time_between_packets_mean": time_between_packets_mean,
+            "num_syn_flags": num_syn_flags,
+            "num_rst_flags": num_rst_flags,
+            "num_fin_flags": num_fin_flags,
+            "num_urg_flags": num_urg_flags,
+            "num_psh_flags": num_psh_flags,
+            "num_ack_flags": num_ack_flags,
+            "initial_window_size": initial_window_size,
+            "incomplete_handshake": incomplete_handshake,
+            "tcp_flags_count": tcp_flags_count,
+            "packets_src_to_dst": packets_src_to_dst,
+            "packets_dst_to_src": packets_dst_to_src,
+            "bytes_src_to_dst": bytes_src_to_dst,
+            "bytes_dst_to_src": bytes_dst_to_src,
+            "label": label
         }
 
         return {
-            "csv_row": csv_row,
-            "model_row": model_row
+            "csv_row": [all_features_dict[f] for f in self.all_features],
+            "model_row": [all_features_dict[f] for f in self.model_features]
         }
 
     def process_flow(self, flow):

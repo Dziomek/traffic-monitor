@@ -1,6 +1,43 @@
 import argparse
 import os
 import netifaces
+from enum import Enum
+
+class AllFeatures(str, Enum):
+    SRC_IP = "src_ip"
+    DST_IP = "dst_ip"
+    SRC_PORT = "src_port"
+    DST_PORT = "dst_port"
+    PROTOCOL = "protocol"
+    FLOW_DURATION = "flow_duration"
+    PACKET_RATE = "packet_rate"
+    BYTE_RATE = "byte_rate"
+    PACKET_COUNT = "packet_count"
+    BYTE_COUNT = "byte_count"
+    AVG_PACKET_SIZE = "avg_packet_size"
+    MIN_PACKET_SIZE = "min_packet_size"
+    MAX_PACKET_SIZE = "max_packet_size"
+    STD_PACKET_SIZE = "std_packet_size"
+    TIME_BETWEEN_PACKETS_MEAN = "time_between_packets_mean"
+    NUM_SYN_FLAGS = "num_syn_flags"
+    NUM_RST_FLAGS = "num_rst_flags"
+    NUM_FIN_FLAGS = "num_fin_flags"
+    NUM_URG_FLAGS = "num_urg_flags"
+    NUM_PSH_FLAGS = "num_psh_flags"
+    NUM_ACK_FLAGS = "num_ack_flags"
+    INITIAL_WINDOW_SIZE = "initial_window_size"
+    INCOMPLETE_HANDSHAKE = "incomplete_handshake"
+    TCP_FLAGS_COUNT = "tcp_flags_count"
+    PACKETS_SRC_TO_DST = "packets_src_to_dst"
+    PACKETS_DST_TO_SRC = "packets_dst_to_src"
+    BYTES_SRC_TO_DST = "bytes_src_to_dst"
+    BYTES_DST_TO_SRC = "bytes_dst_to_src"
+    LABEL = "label"
+
+class ExcludedFeatures(str, Enum):
+    SRC_IP = "src_ip"
+    DST_IP = "dst_ip"
+    LABEL = "label"
 
 def get_active_interfaces(exclude=("lo", "docker0", "vboxnet0")):
     active = []
@@ -29,6 +66,10 @@ def get_config():
         if not args.attack or not args.attacker_ip:
             parser.error("--attack and --attacker_ip are required in collect mode.")
 
+    all_features = [f.value for f in AllFeatures]
+    excluded = {f.value for f in ExcludedFeatures}
+    model_features = [f for f in all_features if f not in excluded]
+
     config = {
         "mode": args.mode,
         "attack": args.attack,
@@ -40,7 +81,9 @@ def get_config():
         "CSV_FILENAME": f"{args.attack}_{args.flow_max_duration}s_{args.flow_timeout}s.csv" if args.attack else None,
         "OUTPUT_FOLDER": "dataset",
         "MODEL_PATH": "model/rf_model.pkl",
-        "ENCODER_PATH": "model/label_encoder.pkl"
+        "ENCODER_PATH": "model/label_encoder.pkl",
+        "ALL_FEATURES": all_features,
+        "MODEL_FEATURES": model_features,
     }
 
     os.makedirs(config["OUTPUT_FOLDER"], exist_ok=True)
