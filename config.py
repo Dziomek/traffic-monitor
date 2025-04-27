@@ -18,7 +18,10 @@ class AllFeatures(str, Enum):
     MIN_PACKET_SIZE = "min_packet_size"
     MAX_PACKET_SIZE = "max_packet_size"
     STD_PACKET_SIZE = "std_packet_size"
-    TIME_BETWEEN_PACKETS_MEAN = "time_between_packets_mean"
+    IAT_MEAN = "iat_mean"
+    IAT_STD = "iat_std"
+    IAT_MIN = "iat_min"
+    IAT_MAX = "iat_max"
     NUM_SYN_FLAGS = "num_syn_flags"
     NUM_RST_FLAGS = "num_rst_flags"
     NUM_FIN_FLAGS = "num_fin_flags"
@@ -28,8 +31,6 @@ class AllFeatures(str, Enum):
     TCP_FLAGS_COUNT = "tcp_flags_count"
     INITIAL_WINDOW_SIZE = "initial_window_size"
     INCOMPLETE_HANDSHAKE = "incomplete_handshake"
-    PACKETS_SRC_TO_DST = "packets_src_to_dst"
-    BYTES_SRC_TO_DST = "bytes_src_to_dst"
     LABEL = "label"
 
 class ExcludedFeatures(str, Enum):

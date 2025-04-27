@@ -59,9 +59,15 @@ class Processor:
         std_packet_size = statistics.stdev(packet_sizes) if packet_count > 1 else 0
         if packet_count > 1:
             time_diffs = [flow["packets"][i+1].time - flow["packets"][i].time for i in range(len(flow["packets"])-1)]
-            time_between_packets_mean = sum(time_diffs) / len(time_diffs)
+            iat_mean = sum(time_diffs) / len(time_diffs)
+            iat_std = statistics.stdev(time_diffs) if len(time_diffs) > 1 else 0
+            iat_min = min(time_diffs)
+            iat_max = max(time_diffs)
         else:
-            time_between_packets_mean = 0
+            iat_mean = 0
+            iat_std = 0
+            iat_min = 0
+            iat_max = 0
         num_syn_flags = sum(1 for pkt in flow["packets"] if pkt.haslayer(TCP) and "S" in pkt[TCP].flags)
         num_rst_flags = sum(1 for pkt in flow["packets"] if pkt.haslayer(TCP) and "R" in pkt[TCP].flags)
         num_fin_flags = sum(1 for pkt in flow["packets"] if pkt.haslayer(TCP) and "F" in pkt[TCP].flags)
@@ -71,8 +77,6 @@ class Processor:
         tcp_flags_count = num_syn_flags + num_rst_flags + num_fin_flags + num_urg_flags + num_psh_flags + num_ack_flags
         initial_window_size = first_packet[TCP].window if first_packet.haslayer(TCP) else None
         incomplete_handshake = 1 if (num_syn_flags > 0 and num_ack_flags == 0) else 0
-        packets_src_to_dst = sum(1 for pkt in flow["packets"] if pkt[IP].src == src_ip) if src_ip else 0
-        bytes_src_to_dst = sum(len(pkt) for pkt in flow["packets"] if pkt[IP].src == src_ip) if src_ip else 0
         label = "benign"
 
         all_features_dict = {
@@ -90,7 +94,10 @@ class Processor:
             "min_packet_size": min_packet_size,
             "max_packet_size": max_packet_size,
             "std_packet_size": std_packet_size,
-            "time_between_packets_mean": time_between_packets_mean,
+            "iat_mean": iat_mean,
+            "iat_std": iat_std,
+            "iat_min": iat_min,
+            "iat_max": iat_max,
             "num_syn_flags": num_syn_flags,
             "num_rst_flags": num_rst_flags,
             "num_fin_flags": num_fin_flags,
@@ -100,8 +107,6 @@ class Processor:
             "tcp_flags_count": tcp_flags_count,
             "initial_window_size": initial_window_size,
             "incomplete_handshake": incomplete_handshake,
-            "packets_src_to_dst": packets_src_to_dst,
-            "bytes_src_to_dst": bytes_src_to_dst,
             "label": label
         }
 
