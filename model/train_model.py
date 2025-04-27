@@ -23,7 +23,7 @@ print(f"\nConnected{len(dataframes)} fles. {len(df_all)} flows in total.\n")
 if "label" not in df_all.columns:
     raise ValueError("Missing 'label' column in data")
 
-X = df_all.drop(columns=["src_ip", "dst_ip", "label"], errors="ignore")
+X = df_all.drop(columns=["src_ip", "dst_ip", "label", "src_port", "dst_port"], errors="ignore")
 y = df_all["label"]
 
 X = X.fillna(0)

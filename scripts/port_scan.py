@@ -38,7 +38,7 @@ for filename in os.listdir(SOURCE_FOLDER):
             else:
                 print("No matching flows found")
 
-            df = df.drop(columns=[col for col in COLUMNS_TO_DROP if col in df.columns])
+            # df = df.drop(columns=[col for col in COLUMNS_TO_DROP if col in df.columns])
 
             new_filename = filename.replace(".csv", "_stripped.csv")
             output_path = os.path.join(OUTPUT_FOLDER, new_filename)
