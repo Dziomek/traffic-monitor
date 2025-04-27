@@ -8,8 +8,10 @@ import numpy as np
 import pandas as pd
 
 class Processor:
-    def __init__(self, output_folder, csv_filename, mode, model_path="model/rf_model.pkl", encoder_path="model/label_encoder.pkl"):
+    def __init__(self, output_folder, csv_filename, mode, attack, attacker_ip, model_path="model/rf_model.pkl", encoder_path="model/label_encoder.pkl"):
         self.mode = mode
+        self.attack = attack
+        self.attacker_ip = attacker_ip
         self.model = joblib.load(model_path)
         self.encoder = joblib.load(encoder_path)
         self.output_folder = output_folder
@@ -136,12 +138,15 @@ class Processor:
         csv_row = features["csv_row"]
         model_row = features["model_row"]
 
-
         # Predykcja
         if(self.mode == "detect"):
             predicted_label = self.predict_label(model_row)
         else:
-            predicted_label = "benign"
+            src_ip = csv_row[0]  # TODO (be careful about that, here I suppose that src_ip is first column)
+            if self.attacker_ip and src_ip == self.attacker_ip:
+                predicted_label = self.attack.upper()
+            else:
+                predicted_label = "benign"
 
         csv_row[-1] = predicted_label
 

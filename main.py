@@ -1,29 +1,17 @@
-from scapy.all import get_if_list, get_if_hwaddr
 import time
 from worker import Worker
 from config import get_config
 
 if __name__ == "__main__":
     config = get_config()
-
     interfaces = config["interfaces"]
 
     if not interfaces:
         print("No interfaces")
         exit(1)
 
-    # my_int = interfaces[5]
-
     workers = [
-        Worker(
-            iface,
-            filter_expr=config["filter_expr"],
-            csv_filename=config["csv_file"],
-            output_folder=config["output_folder"],
-            flow_timeout=config["flow_timeout"],
-            flow_max_duration=config["flow_max_duration"],
-            mode=config["mode"]
-        )
+        Worker(iface, config)
         for iface in interfaces
     ]
 
@@ -34,6 +22,6 @@ if __name__ == "__main__":
         while any(worker.running for worker in workers):
             time.sleep(1)
     except KeyboardInterrupt:
-        print("\n[*] Zatrzymywanie workerów...")
+        print("\nStopping workers...")
         for worker in workers:
             worker.stop()
