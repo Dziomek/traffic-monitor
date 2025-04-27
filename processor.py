@@ -28,7 +28,7 @@ class Processor:
                 try:
                     with open(self.output_file, "w", newline="") as f:
                         writer = csv.writer(f)
-                        writer.writerow(self.fields)
+                        writer.writerow(self.all_features)
                 except Exception as e:
                     print(f"Błąd przy tworzeniu pliku CSV: {e}")
     
