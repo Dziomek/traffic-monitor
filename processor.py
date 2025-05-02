@@ -33,7 +33,7 @@ class Processor:
                     print(f"Błąd przy tworzeniu pliku CSV: {e}")
     
     def predict_label(self, model_row):
-        feature_df = pd.DataFrame([model_row])
+        feature_df = pd.DataFrame([model_row], columns=self.model_features)
         prediction = self.model.predict(feature_df)[0]
         label = self.encoder.inverse_transform([prediction])[0]
         return label

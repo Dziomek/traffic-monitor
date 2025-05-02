@@ -36,8 +36,8 @@ class AllFeatures(str, Enum):
 class ExcludedFeatures(str, Enum):
     SRC_IP = "src_ip"
     DST_IP = "dst_ip"
-    SRC_PORT = "src_port"
-    DST_PORT = "dst_port"
+    # SRC_PORT = "src_port"
+    # DST_PORT = "dst_port"
     LABEL = "label"
 
 def get_active_interfaces(exclude=("lo", "docker0", "vboxnet0")):
@@ -81,8 +81,8 @@ def get_config():
         "INTERFACES": get_active_interfaces(),
         "CSV_FILENAME": f"{args.attack}_{args.flow_max_duration}s_{args.flow_timeout}s.csv" if args.attack else None,
         "OUTPUT_FOLDER": "dataset",
-        "MODEL_PATH": "model/rf_model.pkl",
-        "ENCODER_PATH": "model/label_encoder.pkl",
+        "MODEL_PATH": "model/rf_model_5s.pkl",
+        "ENCODER_PATH": "model/label_encoder_5s.pkl",
         "ALL_FEATURES": all_features,
         "MODEL_FEATURES": model_features,
     }
