@@ -3,10 +3,29 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class MainPage(QtWidgets.QWidget):
     def __init__(self, workers, parent=None):
         super().__init__(parent)
+        self.running = False
         self.workers = workers
-        for worker in self.workers:
-            worker.processor.flow_result.connect(self.handle_result)
+
+        for w in self.workers:
+            w.processor.flow_result.connect(self.handle_result)
+
         self.setupUi()
+
+    def toggle_workers(self):
+        if not self.running:
+            for w in self.workers:
+                w.start()
+            self.running = True
+            self.startStopButton.setText("Stop")
+            # self.startStopButton.setIcon(QtGui.QIcon("assets/cancel_24.svg"))
+            self.startStopButton.setStyleSheet("border-radius: 10px; background-color: #4c3a40; color: white")
+        else:
+            for w in self.workers:
+                w.stop()
+            self.running = False
+            self.startStopButton.setText("Start")
+            # self.startStopButton.setIcon(QtGui.QIcon("assets/play_arrow_24.svg"))
+            self.startStopButton.setStyleSheet("border-radius: 10px; background-color: #3a4c3f; color: white")
 
     def setupUi(self):
         self.setObjectName("mainPage")
@@ -43,10 +62,16 @@ class MainPage(QtWidgets.QWidget):
         )
 
         # Stop button
-        self.stopButton = QtWidgets.QPushButton("Stop", self)
-        self.stopButton.setGeometry(QtCore.QRect(350, 40, 93, 28))
-        self.stopButton.setStyleSheet("border-radius: 10px; background-color: #4c3a40")
-        self.stopButton.setIcon(QtGui.QIcon("assets/cancel_24.svg"))
+        # self.stopButton = QtWidgets.QPushButton("Stop", self)
+        # self.stopButton.setGeometry(QtCore.QRect(350, 40, 93, 28))
+        # self.stopButton.setStyleSheet("border-radius: 10px; background-color: #4c3a40")
+        # self.stopButton.setIcon(QtGui.QIcon("assets/cancel_24.svg"))
+
+        self.startStopButton = QtWidgets.QPushButton("Start", self)
+        self.startStopButton.setGeometry(QtCore.QRect(350, 40, 93, 28))
+        self.startStopButton.setStyleSheet("border-radius: 10px; background-color: #3a4c3f; color: white")
+        self.startStopButton.setIcon(QtGui.QIcon("assets/desktop_windows_24.svg"))
+        self.startStopButton.clicked.connect(self.toggle_workers)
 
     def handle_result(self, result):
         msg = (f"[FLOW] {result['src_ip']}:{result['src_port']} → "

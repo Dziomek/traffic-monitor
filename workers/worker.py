@@ -3,9 +3,15 @@ from workers.sniffer import Sniffer
 from workers.collector import Collector
 from workers.processor import Processor
 import queue
+from PyQt5.QtCore import QObject, pyqtSignal
 
-class Worker:
+class Worker(QObject):
+    status_change = pyqtSignal(bool)
+
     def __init__(self, iface, config, max_queue_size=1000):
+
+        super().__init__()
+
         self.iface = iface
         self.collector = Collector(max_queue_size=max_queue_size, flow_timeout=config["flow_timeout"], 
                                    flow_max_duration=config["flow_max_duration"])
@@ -19,20 +25,23 @@ class Worker:
 
     def start(self):
         if not self.running:
-            self.running = True
             self.sniffer.start()
             self.thread.start()
+            self.running = True
+            self.status_change.emit(True)
             print(f'Worker for {self.iface} starts')
 
     def stop(self):
-        self.running = False
         self.sniffer.stop()
+        self.running = False
+        self.status_change.emit(False)
         print(f"Worker for {self.iface} stopped")
 
     def process_flows(self):
         while self.running: 
             try:
                 flow = self.collector.flow_queue.get(timeout=1)  # max 1 s delay
+                print(flow)
                 if flow:
                     self.processor.process_flow(flow)
             except queue.Empty:
