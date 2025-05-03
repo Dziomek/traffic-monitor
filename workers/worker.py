@@ -1,7 +1,7 @@
 import threading
-from sniffer import Sniffer
-from collector import Collector
-from processor import Processor
+from workers.sniffer import Sniffer
+from workers.collector import Collector
+from workers.processor import Processor
 import queue
 
 class Worker:

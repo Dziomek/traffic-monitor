@@ -80,7 +80,7 @@ def get_config():
         "flow_max_duration": args.flow_max_duration,
         "INTERFACES": get_active_interfaces(),
         "CSV_FILENAME": f"{args.attack}_{args.flow_max_duration}s_{args.flow_timeout}s.csv" if args.attack else None,
-        "OUTPUT_FOLDER": "dataset",
+        "OUTPUT_FOLDER": "data/dataset",
         "MODEL_PATH": "model/rf_model_5s.pkl",
         "ENCODER_PATH": "model/label_encoder_5s.pkl",
         "ALL_FEATURES": all_features,

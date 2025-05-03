@@ -1,5 +1,5 @@
 import time
-from worker import Worker
+from workers.worker import Worker
 from config import get_config
 
 if __name__ == "__main__":
