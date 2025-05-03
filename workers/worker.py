@@ -21,19 +21,21 @@ class Worker(QObject):
                                    model_path=config["MODEL_PATH"], encoder_path=config["ENCODER_PATH"])
         self.sniffer = Sniffer(iface=self.iface, filter_expr=config["filter_expr"], collector_function=self.collector.add_packet)
         self.running = False
-        self.thread = threading.Thread(target=self.process_flows, daemon=True)
+        self.thread = None
 
     def start(self):
         if not self.running:
-            self.sniffer.start()
-            self.thread.start()
             self.running = True
+            self.sniffer.start()
+            self.thread = threading.Thread(target=self.process_flows, daemon=True)
+            self.thread.start()
             self.status_change.emit(True)
             print(f'Worker for {self.iface} starts')
 
     def stop(self):
-        self.sniffer.stop()
         self.running = False
+        self.sniffer.stop()
+        self.thread.join(timeout=2)
         self.status_change.emit(False)
         print(f"Worker for {self.iface} stopped")
 
@@ -41,7 +43,6 @@ class Worker(QObject):
         while self.running: 
             try:
                 flow = self.collector.flow_queue.get(timeout=1)  # max 1 s delay
-                print(flow)
                 if flow:
                     self.processor.process_flow(flow)
             except queue.Empty:

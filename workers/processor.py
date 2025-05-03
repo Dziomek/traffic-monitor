@@ -123,6 +123,7 @@ class Processor(QObject):
         }
 
     def process_flow(self, flow):
+        print('proc')
         if not flow["packets"]:
             return
 

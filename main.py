@@ -11,8 +11,5 @@ if __name__ == "__main__":
     window = MainWindow()
     window.show()
 
-    # 4) po wyjściu z pętli eventów – zatrzymujemy workery
     exit_code = app.exec_()
-    # for w in workers:
-    #     w.stop()
     sys.exit(exit_code)
