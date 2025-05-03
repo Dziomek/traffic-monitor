@@ -33,11 +33,3 @@ if __name__ == "__main__":
     for w in workers:
         w.stop()
     sys.exit(exit_code)
-
-    # try:
-    #     while any(worker.running for worker in workers):
-    #         time.sleep(1)
-    # except KeyboardInterrupt:
-    #     print("\nStopping workers...")
-    #     for worker in workers:
-    #         worker.stop()

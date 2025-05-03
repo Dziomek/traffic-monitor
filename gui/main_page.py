@@ -1,8 +1,11 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 class MainPage(QtWidgets.QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, workers, parent=None):
         super().__init__(parent)
+        self.workers = workers
+        for worker in self.workers:
+            worker.processor.flow_result.connect(self.handle_result)
         self.setupUi()
 
     def setupUi(self):
@@ -44,3 +47,9 @@ class MainPage(QtWidgets.QWidget):
         self.stopButton.setGeometry(QtCore.QRect(350, 40, 93, 28))
         self.stopButton.setStyleSheet("border-radius: 10px; background-color: #4c3a40")
         self.stopButton.setIcon(QtGui.QIcon("assets/cancel_24.svg"))
+
+    def handle_result(self, result):
+        msg = (f"[FLOW] {result['src_ip']}:{result['src_port']} → "
+        f"{result['dst_ip']}:{result['dst_port']} | Label: {result['predicted_label']}")
+
+        self.consoleWindow.append(msg)

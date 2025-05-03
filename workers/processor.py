@@ -7,9 +7,16 @@ import joblib
 import numpy as np
 import pandas as pd
 
-class Processor:
+from PyQt5.QtCore import QObject, pyqtSignal
+
+class Processor(QObject):
+    flow_result = pyqtSignal(dict)
+
     def __init__(self, output_folder, csv_filename, mode, attack, attacker_ip, all_features, model_features, 
                  model_path="model/rf_model.pkl", encoder_path="model/label_encoder.pkl"):
+        
+        super().__init__()
+
         self.mode = mode
         self.attack = attack
         self.attacker_ip = attacker_ip
@@ -141,8 +148,17 @@ class Processor:
             with open(self.output_file, "a", newline="") as f:
                 writer = csv.writer(f)
                 writer.writerow(csv_row)
+
             print(f"*MODE: {self.mode}* Flow classified as '{predicted_label}' and saved to {self.output_file}")
         else:
             print(f"*MODE: {self.mode}* Flow classified as '{predicted_label}'")
+
+        self.flow_result.emit({
+            "predicted_label": predicted_label,
+            "src_ip": csv_row[0],
+            "dst_ip": csv_row[1],
+            "src_port": csv_row[2],
+            "dst_port": csv_row[3]
+        })
         
             

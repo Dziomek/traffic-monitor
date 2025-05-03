@@ -55,7 +55,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.stackedWidget.setGeometry(80, 40, 471, 331)
 
         # Dodajemy strony
-        self.mainPage = MainPage()
+        self.mainPage = MainPage(self.workers)
         self.stackedWidget.addWidget(self.mainPage)
         # tu w przyszłości inne widoki:
         # self.filesPage = FilesPage()
@@ -65,4 +65,6 @@ class MainWindow(QtWidgets.QMainWindow):
         # Podłączenie sygnałów
         self.buttons[0].clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.mainPage))
         # analogicznie dla pozostałych
+
+
 
