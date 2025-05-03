@@ -58,7 +58,7 @@ class MainPage(QtWidgets.QWidget):
         self.consoleWindow.setGeometry(QtCore.QRect(10, 110, 451, 221))
         self.consoleWindow.setStyleSheet(
             "background-color: #1e1e1e; color: #00ff00; font-family: Consolas;"
-            " font-size: 12pt; border: 1px solid #444; padding: 8px;"
+            " font-size: 8pt; border: 1px solid #444; padding: 8px;"
         )
 
         # Stop button
@@ -74,7 +74,14 @@ class MainPage(QtWidgets.QWidget):
         self.startStopButton.clicked.connect(self.toggle_workers)
 
     def handle_result(self, result):
-        msg = (f"[FLOW] {result['src_ip']}:{result['src_port']} → "
-        f"{result['dst_ip']}:{result['dst_port']} | Label: {result['predicted_label']}")
+        msg = (
+            f"<span style='color:#00ff00;'>[FLOW]</span> "
+            f"<span style='color:#4caf50;'>{result['src_ip']}</span>"
+            f"<span style='color:#a5d6a7;'>:{result['src_port']}</span> → "
+            f"<span style='color:#4caf50;'>{result['dst_ip']}</span>"
+            f"<span style='color:#a5d6a7;'>:{result['dst_port']}</span> | "
+            f"<span style='color:#81c784; font-weight:bold;'>Label:</span> "
+            f"<span style='color:#c5e1a5; font-style:italic;'>{result['predicted_label']}</span>"
+        )
 
         self.consoleWindow.append(msg)
