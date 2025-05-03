@@ -1,9 +1,10 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from main_page import MainPage
+from gui.main_page import MainPage
 
 class MainWindow(QtWidgets.QMainWindow):
-    def __init__(self):
+    def __init__(self, workers):
         super().__init__()
+        self.workers = workers
         self.setupUi()
 
     def setupUi(self):
