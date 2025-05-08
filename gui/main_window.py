@@ -1,5 +1,4 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from gui.main_page import MainPage
 from config import get_config
 from workers.worker import Worker
 

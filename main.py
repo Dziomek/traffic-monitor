@@ -1,7 +1,7 @@
 import time
 from workers.worker import Worker
 from config import get_config
-from gui.main_window import MainWindow
+from gui.new_main_window import MainWindow
 from PyQt5 import QtWidgets, QtCore
 import sys
 
