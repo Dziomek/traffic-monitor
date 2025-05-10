@@ -18,6 +18,8 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         MainWindow.setFont(font)
+
+        
         self.centralWidget = QtWidgets.QWidget(MainWindow)
         self.centralWidget.setStyleSheet("background-color: #202229")
         self.centralWidget.setObjectName("centralWidget")

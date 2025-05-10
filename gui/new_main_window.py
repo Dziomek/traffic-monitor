@@ -1,16 +1,27 @@
-from PyQt5 import QtWidgets, QtGui
+from PyQt5 import QtWidgets, QtGui, QtCore
 from gui.gui import Ui_MainWindow  # <-- Twoja wygenerowana klasa
 from config import get_config
 from workers.worker import Worker
+from datetime import datetime
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.ui = Ui_MainWindow()
+
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+
         self.ui.setupUi(self)
 
         self.config = get_config()
         self.interfaces = self.config["INTERFACES"]
+
+        self.display_mode = "all"
+        self.flow_logs = []
+
+        self.ui.allButton.clicked.connect(self.show_all_logs)
+        self.ui.threatsOnlyButton.clicked.connect(self.show_threats_only)
 
         self.workers = [
             Worker(iface, self.config)
@@ -54,6 +65,43 @@ QPushButton:hover {
     background-color: #292933;
 }
 """
+        self.ACTIVE_BUTTON_STYLE = """
+QPushButton {
+    color: white;
+    background-color: black;
+    border: 1px solid #1b1d23;
+    border-radius: 6px;
+}
+"""
+
+        self.INACTIVE_BUTTON_STYLE = """
+QPushButton {
+    color: white;
+    background-color: transparent;
+    border: none;
+    border-radius: 6px;
+}
+QPushButton:hover {
+    background-color: #292933;
+}
+"""
+    def show_all_logs(self):
+        self.display_mode = "all"
+        self.ui.consoleTextEdit.clear()
+        for result in self.flow_logs:
+            self.append_formatted_flow(result)
+
+        self.ui.allButton.setStyleSheet(self.ACTIVE_BUTTON_STYLE)
+        self.ui.threatsOnlyButton.setStyleSheet(self.INACTIVE_BUTTON_STYLE)
+
+    def show_threats_only(self):
+        self.display_mode = "threats"
+        self.ui.consoleTextEdit.clear()
+        for result in self.flow_logs:
+            self.append_formatted_flow(result)
+        
+        self.ui.threatsOnlyButton.setStyleSheet(self.ACTIVE_BUTTON_STYLE)
+        self.ui.allButton.setStyleSheet(self.INACTIVE_BUTTON_STYLE)
 
     def toggle_workers(self):
         if any(w.running for w in self.workers):
@@ -90,6 +138,25 @@ QPushButton:hover {
             f"<span style='font-family: Segoe UI; color: {color_label}; font-weight: bold;'>| {result['predicted_label'].upper()}</span>"
         )
 
+        self.flow_logs.append(result)
+        self.append_formatted_flow(result)
+
+    def append_formatted_flow(self, result):
+        if self.display_mode == "threats" and result["predicted_label"].lower() == "benign":
+            return
+        timestamp = datetime.now().strftime("%H:%M:%S")
+
+        color_label = "#2a9b80" if result['predicted_label'].lower() == "benign" else "#e57373"
+
+        msg = (
+            f"<span style='font-family: Segoe UI; color: #6c6f7f;'>[{timestamp}] [FLOW]</span> "
+            f"<span style='font-family: Segoe UI; color: #9ccfd8;'>{result['src_ip']}:</span>"
+            f"<span style='font-family: Segoe UI; color: #89b4fa;'>{result['src_port']}</span> "
+            f"<span style='font-family: Segoe UI; color: #6c6f7f;'>→</span> "
+            f"<span style='font-family: Segoe UI; color: #9ccfd8;'>{result['dst_ip']}:</span>"
+            f"<span style='font-family: Segoe UI; color: #89b4fa;'>{result['dst_port']}</span> "
+            f"<span style='font-family: Segoe UI; color: {color_label}; font-weight: bold;'>| {result['predicted_label'].upper()}</span>"
+        )
 
         self.ui.consoleTextEdit.append(msg)
 
@@ -101,3 +168,4 @@ QPushButton:hover {
         )
 
         self.ui.consoleTextEdit.append(formatted_msg)
+
