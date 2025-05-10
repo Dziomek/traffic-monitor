@@ -50,7 +50,6 @@ class Ui_MainWindow(object):
         self.statusIcon.setStyleSheet("border: none;\n"
 "background-color: transparent;")
         self.statusIcon.setText("")
-        self.statusIcon.setPixmap(QtGui.QPixmap("assets/running.svg"))
         self.statusIcon.setObjectName("statusIcon")
         self.modeFrame = QtWidgets.QFrame(self.centralWidget)
         self.modeFrame.setGeometry(QtCore.QRect(10, 20, 101, 41))
@@ -146,13 +145,22 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(62)
         self.pushButton_4.setFont(font)
-        self.pushButton_4.setStyleSheet("background-color:  #24262e;\n"
-"border-radius: 8px;\n"
-"padding: 6px 12px;\n"
-"color: white;\n"
-"font-weight: 500;\n"
-"border-top: 1px solid #393a3b;\n"
-"border-bottom: 1px solid black;")
+        self.pushButton_4.setStyleSheet("""
+QPushButton {
+    background-color: #24262e;
+    color: #2a9b80;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-weight: 500;
+    border-top: 1px solid #393a3b;
+    border-bottom: 1px solid black;                                  
+}
+QPushButton:hover {
+    background-color: #292933;
+}
+"""
+)
+        self.pushButton_4.setCursor(QtCore.Qt.PointingHandCursor)
         self.pushButton_4.setObjectName("pushButton_4")
         self.consoleWrapper = QtWidgets.QFrame(self.centralWidget)
         self.consoleWrapper.setGeometry(QtCore.QRect(10, 80, 761, 411))
@@ -181,6 +189,7 @@ class Ui_MainWindow(object):
 "border-bottom-right-radius: 0px;\n"
 "background-color: black;\n"
 "border: none;")
+        self.allButton.setCursor(QtCore.Qt.PointingHandCursor)
         self.allButton.setObjectName("allButton")
         self.threatsOnlyButton = QtWidgets.QPushButton(self.consoleWrapper)
         self.threatsOnlyButton.setGeometry(QtCore.QRect(80, 10, 81, 31))
@@ -192,6 +201,7 @@ class Ui_MainWindow(object):
 "border-bottom-left-radius: 0px;\n"
 "border: 1px solid #1b1d23;\n"
 "border-top: none;")
+        self.threatsOnlyButton.setCursor(QtCore.Qt.PointingHandCursor)
         self.threatsOnlyButton.setObjectName("threatsOnlyButton")
         MainWindow.setCentralWidget(self.centralWidget)
 
@@ -205,6 +215,6 @@ class Ui_MainWindow(object):
         self.modeLabel.setText(_translate("MainWindow", "detect"))
         self.timeLabel.setText(_translate("MainWindow", "15s"))
         self.interfacesLabel.setText(_translate("MainWindow", "2 interfaces"))
-        self.pushButton_4.setText(_translate("MainWindow", "Stop"))
+        self.pushButton_4.setText(_translate("MainWindow", "Start"))
         self.allButton.setText(_translate("MainWindow", "All"))
         self.threatsOnlyButton.setText(_translate("MainWindow", "Threats only"))

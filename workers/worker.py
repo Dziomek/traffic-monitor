@@ -7,6 +7,7 @@ from PyQt5.QtCore import QObject, pyqtSignal
 
 class Worker(QObject):
     status_change = pyqtSignal(bool)
+    interface_information = pyqtSignal(str)
 
     def __init__(self, iface, config, max_queue_size=1000):
 
@@ -30,6 +31,7 @@ class Worker(QObject):
             self.thread = threading.Thread(target=self.process_flows, daemon=True)
             self.thread.start()
             self.status_change.emit(True)
+            self.interface_information.emit(f'Worker for {self.iface} starts')
             print(f'Worker for {self.iface} starts')
 
     def stop(self):
@@ -37,6 +39,7 @@ class Worker(QObject):
         self.sniffer.stop()
         self.thread.join(timeout=2)
         self.status_change.emit(False)
+        self.interface_information.emit(f"Worker for {self.iface} stopped")
         print(f"Worker for {self.iface} stopped")
 
     def process_flows(self):
