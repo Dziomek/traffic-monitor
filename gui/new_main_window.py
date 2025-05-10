@@ -19,6 +19,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         for w in self.workers:
             w.status_change.connect(self.on_worker_status_changed)
+            w.processor.flow_result.connect(self.handle_result)
 
         self.ui.pushButton_4.clicked.connect(self.toggle_workers)
 
@@ -41,3 +42,19 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             self.ui.statusIcon.setPixmap(QtGui.QPixmap("assets/pending_24.svg"))
             self.ui.statusLabel.setText("Stopped")
+    
+    def handle_result(self, result):
+        color_label = "#2a9b80" if result['predicted_label'].lower() == "benign" else "#e57373"
+
+        msg = (
+            f"<span style='font-family: Segoe UI; color: #6c6f7f;'>[FLOW]</span> "
+            f"<span style='font-family: Segoe UI; color: #9ccfd8;'>{result['src_ip']}:</span>"
+            f"<span style='font-family: Segoe UI; color: #89b4fa;'>{result['src_port']}</span> "
+            f"<span style='font-family: Segoe UI; color: #6c6f7f;'>→</span> "
+            f"<span style='font-family: Segoe UI; color: #9ccfd8;'>{result['dst_ip']}:</span>"
+            f"<span style='font-family: Segoe UI; color: #89b4fa;'>{result['dst_port']}</span> "
+            f"<span style='font-family: Segoe UI; color: {color_label}; font-weight: bold;'>| {result['predicted_label'].upper()}</span>"
+        )
+
+
+        self.ui.consoleTextEdit.append(msg)
