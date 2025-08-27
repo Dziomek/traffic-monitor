@@ -1,0 +1,221 @@
+{
+  "data": {
+    "dataset_file": "D:\\Desktop\\traffic-monitor\\dataset\\processed\\processed_5s.csv",
+    "dataset_class_distribution": {
+      "benign": 339931,
+      "PORT_SCAN": 262603,
+      "UDP_FLOOD": 178898,
+      "SYN_FLOOD": 140616,
+      "SLOWLORIS": 27824,
+      "FTP_BRUTEFORCE": 849,
+      "SSH_BRUTEFORCE": 724,
+      "ICMP_FLOOD": 59
+    },
+    "n_total": 951504,
+    "n_train": 761203,
+    "n_test": 190301,
+    "class_distribution_train": {
+      "benign": 271945,
+      "PORT_SCAN": 210082,
+      "UDP_FLOOD": 143119,
+      "SYN_FLOOD": 112493,
+      "SLOWLORIS": 22259,
+      "FTP_BRUTEFORCE": 679,
+      "SSH_BRUTEFORCE": 579,
+      "ICMP_FLOOD": 47
+    },
+    "class_distribution_test": {
+      "benign": 67986,
+      "PORT_SCAN": 52521,
+      "UDP_FLOOD": 35779,
+      "SYN_FLOOD": 28123,
+      "SLOWLORIS": 5565,
+      "FTP_BRUTEFORCE": 170,
+      "SSH_BRUTEFORCE": 145,
+      "ICMP_FLOOD": 12
+    }
+  },
+  "cv": {
+    "type": "RepeatedStratifiedKFold",
+    "n_splits": 3,
+    "n_repeats": 3,
+    "random_state": 2809754,
+    "scoring": "f1_macro",
+    "best_params": {
+      "clf__kernel": "rbf"
+    },
+    "best_score_mean": 0.8409818380629539,
+    "search_kind": "GridSearchCV",
+    "n_iter": 0
+  },
+  "test": {
+    "random_state_split": 2809754,
+    "metrics": {
+      "accuracy": 0.9774988045254623,
+      "f1_macro": 0.8244999725273999,
+      "f1_weighted": 0.9778809716154299
+    },
+    "classification_report": {
+      "FTP_BRUTEFORCE": {
+        "precision": 0.33402489626556015,
+        "recall": 0.9470588235294117,
+        "f1-score": 0.4938650306748466,
+        "support": 170.0
+      },
+      "ICMP_FLOOD": {
+        "precision": 0.4444444444444444,
+        "recall": 1.0,
+        "f1-score": 0.6153846153846154,
+        "support": 12.0
+      },
+      "PORT_SCAN": {
+        "precision": 0.9551669374418138,
+        "recall": 0.9962681594029055,
+        "f1-score": 0.9752847104434214,
+        "support": 52521.0
+      },
+      "SLOWLORIS": {
+        "precision": 0.9478715728715729,
+        "recall": 0.9442946990116802,
+        "f1-score": 0.9460797551534792,
+        "support": 5565.0
+      },
+      "SSH_BRUTEFORCE": {
+        "precision": 0.5223880597014925,
+        "recall": 0.7241379310344828,
+        "f1-score": 0.6069364161849711,
+        "support": 145.0
+      },
+      "SYN_FLOOD": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 28123.0
+      },
+      "UDP_FLOOD": {
+        "precision": 0.9778609888758302,
+        "recall": 0.9999441012884653,
+        "f1-score": 0.9887792609789128,
+        "support": 35779.0
+      },
+      "benign": {
+        "precision": 0.9954303240597311,
+        "recall": 0.9452093077986644,
+        "f1-score": 0.9696699913989528,
+        "support": 67986.0
+      },
+      "accuracy": 0.9774988045254623,
+      "macro avg": {
+        "precision": 0.7721484029575556,
+        "recall": 0.9446141277582012,
+        "f1-score": 0.8244999725273999,
+        "support": 190301.0
+      },
+      "weighted avg": {
+        "precision": 0.9793133309403534,
+        "recall": 0.9774988045254623,
+        "f1-score": 0.9778809716154299,
+        "support": 190301.0
+      }
+    },
+    "confusion_matrix": [
+      [
+        161,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        8
+      ],
+      [
+        0,
+        12,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        52325,
+        0,
+        0,
+        0,
+        0,
+        196
+      ],
+      [
+        9,
+        0,
+        240,
+        5255,
+        2,
+        0,
+        0,
+        59
+      ],
+      [
+        1,
+        0,
+        4,
+        5,
+        105,
+        0,
+        0,
+        30
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        28123,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        35777,
+        2
+      ],
+      [
+        311,
+        15,
+        2211,
+        284,
+        94,
+        0,
+        810,
+        64261
+      ]
+    ]
+  },
+  "model": {
+    "name": "SVM",
+    "use_resampling": true,
+    "class_weight": null,
+    "under_cap": 50000,
+    "over_target": 5000
+  },
+  "env": {
+    "python": "3.11.2",
+    "sklearn": "1.6.1",
+    "imblearn": "0.13.0",
+    "numpy": "2.2.4",
+    "pandas": "2.2.3"
+  },
+  "timing": {
+    "fit_seconds": 1135.1120171546936
+  }
+}

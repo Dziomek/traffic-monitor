@@ -1,0 +1,222 @@
+{
+  "data": {
+    "dataset_file": "D:\\Desktop\\traffic-monitor\\dataset\\processed\\processed_25s.csv",
+    "dataset_class_distribution": {
+      "benign": 340147,
+      "PORT_SCAN": 225365,
+      "UDP_FLOOD": 167163,
+      "SYN_FLOOD": 95098,
+      "SLOWLORIS": 19498,
+      "FTP_BRUTEFORCE": 626,
+      "SSH_BRUTEFORCE": 488,
+      "ICMP_FLOOD": 14
+    },
+    "n_total": 848399,
+    "n_train": 678719,
+    "n_test": 169680,
+    "class_distribution_train": {
+      "benign": 272118,
+      "PORT_SCAN": 180292,
+      "UDP_FLOOD": 133730,
+      "SYN_FLOOD": 76078,
+      "SLOWLORIS": 15598,
+      "FTP_BRUTEFORCE": 501,
+      "SSH_BRUTEFORCE": 391,
+      "ICMP_FLOOD": 11
+    },
+    "class_distribution_test": {
+      "benign": 68029,
+      "PORT_SCAN": 45073,
+      "UDP_FLOOD": 33433,
+      "SYN_FLOOD": 19020,
+      "SLOWLORIS": 3900,
+      "FTP_BRUTEFORCE": 125,
+      "SSH_BRUTEFORCE": 97,
+      "ICMP_FLOOD": 3
+    }
+  },
+  "cv": {
+    "type": "RepeatedStratifiedKFold",
+    "n_splits": 3,
+    "n_repeats": 3,
+    "random_state": 1698853,
+    "scoring": "f1_macro",
+    "best_params": {
+      "clf__criterion": "entropy",
+      "clf__n_estimators": 300
+    },
+    "best_score_mean": 0.9184218370095016,
+    "search_kind": "GridSearchCV",
+    "n_iter": 0
+  },
+  "test": {
+    "random_state_split": 1698853,
+    "metrics": {
+      "accuracy": 0.9990275813295615,
+      "f1_macro": 0.9124097484800462,
+      "f1_weighted": 0.9990824011329369
+    },
+    "classification_report": {
+      "FTP_BRUTEFORCE": {
+        "precision": 0.926829268292683,
+        "recall": 0.912,
+        "f1-score": 0.9193548387096774,
+        "support": 125.0
+      },
+      "ICMP_FLOOD": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "f1-score": 0.6666666666666666,
+        "support": 3.0
+      },
+      "PORT_SCAN": {
+        "precision": 1.0,
+        "recall": 0.9996228340691766,
+        "f1-score": 0.9998113814643456,
+        "support": 45073.0
+      },
+      "SLOWLORIS": {
+        "precision": 0.9830855971296771,
+        "recall": 0.9835897435897436,
+        "f1-score": 0.9833376057421174,
+        "support": 3900.0
+      },
+      "SSH_BRUTEFORCE": {
+        "precision": 0.5828220858895705,
+        "recall": 0.979381443298969,
+        "f1-score": 0.7307692307692307,
+        "support": 97.0
+      },
+      "SYN_FLOOD": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 19020.0
+      },
+      "UDP_FLOOD": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 33433.0
+      },
+      "benign": {
+        "precision": 0.9997204936963973,
+        "recall": 0.9989563274485881,
+        "f1-score": 0.9993382644883314,
+        "support": 68029.0
+      },
+      "accuracy": 0.9990275813295615,
+      "macro avg": {
+        "precision": 0.874057180626041,
+        "recall": 0.9841937935508096,
+        "f1-score": 0.9124097484800462,
+        "support": 169680.0
+      },
+      "weighted avg": {
+        "precision": 0.9991979413917128,
+        "recall": 0.9990275813295615,
+        "f1-score": 0.9990824011329369,
+        "support": 169680.0
+      }
+    },
+    "confusion_matrix": [
+      [
+        114,
+        0,
+        0,
+        3,
+        8,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        45056,
+        0,
+        0,
+        0,
+        0,
+        17
+      ],
+      [
+        9,
+        0,
+        0,
+        3836,
+        55,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        95,
+        0,
+        0,
+        2
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        19020,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        33433,
+        0
+      ],
+      [
+        0,
+        3,
+        0,
+        63,
+        5,
+        0,
+        0,
+        67958
+      ]
+    ]
+  },
+  "model": {
+    "name": "RandomForest",
+    "use_resampling": true,
+    "class_weight": null,
+    "under_cap": 50000,
+    "over_target": 5000
+  },
+  "env": {
+    "python": "3.11.2",
+    "sklearn": "1.6.1",
+    "imblearn": "0.13.0",
+    "numpy": "2.2.4",
+    "pandas": "2.2.3"
+  },
+  "timing": {
+    "fit_seconds": 294.6735203266144
+  }
+}

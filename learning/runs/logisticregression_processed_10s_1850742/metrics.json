@@ -1,0 +1,222 @@
+{
+  "data": {
+    "dataset_file": "D:\\Desktop\\traffic-monitor\\dataset\\processed\\processed_10s.csv",
+    "dataset_class_distribution": {
+      "benign": 388320,
+      "PORT_SCAN": 292761,
+      "UDP_FLOOD": 216912,
+      "SYN_FLOOD": 142312,
+      "SLOWLORIS": 26847,
+      "FTP_BRUTEFORCE": 787,
+      "SSH_BRUTEFORCE": 435,
+      "ICMP_FLOOD": 35
+    },
+    "n_total": 1068409,
+    "n_train": 854727,
+    "n_test": 213682,
+    "class_distribution_train": {
+      "benign": 310656,
+      "PORT_SCAN": 234209,
+      "UDP_FLOOD": 173529,
+      "SYN_FLOOD": 113849,
+      "SLOWLORIS": 21478,
+      "FTP_BRUTEFORCE": 630,
+      "SSH_BRUTEFORCE": 348,
+      "ICMP_FLOOD": 28
+    },
+    "class_distribution_test": {
+      "benign": 77664,
+      "PORT_SCAN": 58552,
+      "UDP_FLOOD": 43383,
+      "SYN_FLOOD": 28463,
+      "SLOWLORIS": 5369,
+      "FTP_BRUTEFORCE": 157,
+      "SSH_BRUTEFORCE": 87,
+      "ICMP_FLOOD": 7
+    }
+  },
+  "cv": {
+    "type": "RepeatedStratifiedKFold",
+    "n_splits": 3,
+    "n_repeats": 3,
+    "random_state": 1850742,
+    "scoring": "f1_macro",
+    "best_params": {
+      "clf__C": 1,
+      "clf__solver": "liblinear"
+    },
+    "best_score_mean": 0.8063781799141191,
+    "search_kind": "GridSearchCV",
+    "n_iter": 0
+  },
+  "test": {
+    "random_state_split": 1850742,
+    "metrics": {
+      "accuracy": 0.9926666729064685,
+      "f1_macro": 0.8050698395444398,
+      "f1_weighted": 0.9932083317204969
+    },
+    "classification_report": {
+      "FTP_BRUTEFORCE": {
+        "precision": 0.24175824175824176,
+        "recall": 0.8407643312101911,
+        "f1-score": 0.3755334281650071,
+        "support": 157.0
+      },
+      "ICMP_FLOOD": {
+        "precision": 0.4666666666666667,
+        "recall": 1.0,
+        "f1-score": 0.6363636363636364,
+        "support": 7.0
+      },
+      "PORT_SCAN": {
+        "precision": 0.9992145613495885,
+        "recall": 0.9994534772509905,
+        "f1-score": 0.9993340050205776,
+        "support": 58552.0
+      },
+      "SLOWLORIS": {
+        "precision": 0.9247702909647779,
+        "recall": 0.8997951201341032,
+        "f1-score": 0.912111771924856,
+        "support": 5369.0
+      },
+      "SSH_BRUTEFORCE": {
+        "precision": 0.5164835164835165,
+        "recall": 0.5402298850574713,
+        "f1-score": 0.5280898876404494,
+        "support": 87.0
+      },
+      "SYN_FLOOD": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 28463.0
+      },
+      "UDP_FLOOD": {
+        "precision": 0.9973790090815037,
+        "recall": 0.9999538989926929,
+        "f1-score": 0.9986647943092613,
+        "support": 43383.0
+      },
+      "benign": {
+        "precision": 0.9929090862037732,
+        "recall": 0.9880253399258344,
+        "f1-score": 0.9904611929317311,
+        "support": 77664.0
+      },
+      "accuracy": 0.9926666729064685,
+      "macro avg": {
+        "precision": 0.7673976715635086,
+        "recall": 0.9085277565714105,
+        "f1-score": 0.8050698395444398,
+        "support": 213682.0
+      },
+      "weighted avg": {
+        "precision": 0.9940137413857998,
+        "recall": 0.9926666729064685,
+        "f1-score": 0.9932083317204969,
+        "support": 213682.0
+      }
+    },
+    "confusion_matrix": [
+      [
+        132,
+        0,
+        0,
+        11,
+        0,
+        0,
+        0,
+        14
+      ],
+      [
+        0,
+        7,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        58520,
+        0,
+        0,
+        0,
+        0,
+        31
+      ],
+      [
+        42,
+        0,
+        17,
+        4831,
+        5,
+        0,
+        2,
+        472
+      ],
+      [
+        0,
+        0,
+        0,
+        10,
+        47,
+        0,
+        0,
+        30
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        28463,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        43381,
+        1
+      ],
+      [
+        371,
+        7,
+        29,
+        372,
+        39,
+        0,
+        112,
+        76734
+      ]
+    ]
+  },
+  "model": {
+    "name": "LogisticRegression",
+    "use_resampling": true,
+    "class_weight": null,
+    "under_cap": 50000,
+    "over_target": 5000
+  },
+  "env": {
+    "python": "3.11.2",
+    "sklearn": "1.6.1",
+    "imblearn": "0.13.0",
+    "numpy": "2.2.4",
+    "pandas": "2.2.3"
+  },
+  "timing": {
+    "fit_seconds": 342.7089602947235
+  }
+}

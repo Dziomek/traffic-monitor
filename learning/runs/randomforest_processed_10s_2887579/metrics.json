@@ -1,0 +1,222 @@
+{
+  "data": {
+    "dataset_file": "D:\\Desktop\\traffic-monitor\\dataset\\processed\\processed_10s.csv",
+    "dataset_class_distribution": {
+      "benign": 388320,
+      "PORT_SCAN": 292761,
+      "UDP_FLOOD": 216912,
+      "SYN_FLOOD": 142312,
+      "SLOWLORIS": 26847,
+      "FTP_BRUTEFORCE": 787,
+      "SSH_BRUTEFORCE": 435,
+      "ICMP_FLOOD": 35
+    },
+    "n_total": 1068409,
+    "n_train": 854727,
+    "n_test": 213682,
+    "class_distribution_train": {
+      "benign": 310656,
+      "PORT_SCAN": 234209,
+      "UDP_FLOOD": 173529,
+      "SYN_FLOOD": 113849,
+      "SLOWLORIS": 21478,
+      "FTP_BRUTEFORCE": 630,
+      "SSH_BRUTEFORCE": 348,
+      "ICMP_FLOOD": 28
+    },
+    "class_distribution_test": {
+      "benign": 77664,
+      "PORT_SCAN": 58552,
+      "UDP_FLOOD": 43383,
+      "SYN_FLOOD": 28463,
+      "SLOWLORIS": 5369,
+      "FTP_BRUTEFORCE": 157,
+      "SSH_BRUTEFORCE": 87,
+      "ICMP_FLOOD": 7
+    }
+  },
+  "cv": {
+    "type": "RepeatedStratifiedKFold",
+    "n_splits": 3,
+    "n_repeats": 3,
+    "random_state": 2887579,
+    "scoring": "f1_macro",
+    "best_params": {
+      "clf__criterion": "gini",
+      "clf__n_estimators": 300
+    },
+    "best_score_mean": 0.8913063372613633,
+    "search_kind": "GridSearchCV",
+    "n_iter": 0
+  },
+  "test": {
+    "random_state_split": 2887579,
+    "metrics": {
+      "accuracy": 0.9990453103209442,
+      "f1_macro": 0.8957047885429212,
+      "f1_weighted": 0.9991359791689701
+    },
+    "classification_report": {
+      "FTP_BRUTEFORCE": {
+        "precision": 0.9102564102564102,
+        "recall": 0.9044585987261147,
+        "f1-score": 0.9073482428115016,
+        "support": 157.0
+      },
+      "ICMP_FLOOD": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "f1-score": 0.6666666666666666,
+        "support": 7.0
+      },
+      "PORT_SCAN": {
+        "precision": 0.999726705952686,
+        "recall": 0.9996071867741495,
+        "f1-score": 0.9996669427910194,
+        "support": 58552.0
+      },
+      "SLOWLORIS": {
+        "precision": 0.9922509922509922,
+        "recall": 0.9778357235984355,
+        "f1-score": 0.9849906191369606,
+        "support": 5369.0
+      },
+      "SSH_BRUTEFORCE": {
+        "precision": 0.44808743169398907,
+        "recall": 0.9425287356321839,
+        "f1-score": 0.6074074074074074,
+        "support": 87.0
+      },
+      "SYN_FLOOD": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 28463.0
+      },
+      "UDP_FLOOD": {
+        "precision": 0.9999539011178978,
+        "recall": 1.0,
+        "f1-score": 0.99997695002766,
+        "support": 43383.0
+      },
+      "benign": {
+        "precision": 0.9997037800244704,
+        "recall": 0.9994592088998764,
+        "f1-score": 0.9995814795021538,
+        "support": 77664.0
+      },
+      "accuracy": 0.9990453103209442,
+      "macro avg": {
+        "precision": 0.8562474026620557,
+        "recall": 0.977986181703845,
+        "f1-score": 0.8957047885429212,
+        "support": 213682.0
+      },
+      "weighted avg": {
+        "precision": 0.999306361749343,
+        "recall": 0.9990453103209442,
+        "f1-score": 0.9991359791689701,
+        "support": 213682.0
+      }
+    },
+    "confusion_matrix": [
+      [
+        142,
+        0,
+        0,
+        8,
+        7,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        7,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        2,
+        0,
+        58529,
+        0,
+        0,
+        0,
+        0,
+        21
+      ],
+      [
+        10,
+        0,
+        15,
+        5250,
+        93,
+        0,
+        0,
+        1
+      ],
+      [
+        2,
+        0,
+        0,
+        2,
+        82,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        28463,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        43383,
+        0
+      ],
+      [
+        0,
+        7,
+        1,
+        31,
+        1,
+        0,
+        2,
+        77622
+      ]
+    ]
+  },
+  "model": {
+    "name": "RandomForest",
+    "use_resampling": true,
+    "class_weight": null,
+    "under_cap": 50000,
+    "over_target": 5000
+  },
+  "env": {
+    "python": "3.11.2",
+    "sklearn": "1.6.1",
+    "imblearn": "0.13.0",
+    "numpy": "2.2.4",
+    "pandas": "2.2.3"
+  },
+  "timing": {
+    "fit_seconds": 273.6984097957611
+  }
+}
